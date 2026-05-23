@@ -1,109 +1,103 @@
 package br.com.ifba.curso.service;
 
-import br.com.ifba.curso.dao.CursoDao;
+// Entidade (tabela do banco)
 import br.com.ifba.curso.entity.Curso;
+
+// Repository do Spring Data JPA (substitui o DAO)
+import br.com.ifba.curso.repository.CursoRepository;
+
+// Classe utilitária para validar String
 import br.com.ifba.infrastructure.util.StringUtil;
 
 import java.util.List;
+
+// Indica que é uma classe de serviço (regra de negócio)
 import org.springframework.stereotype.Service;
+
+// Controla transações com o banco
 import org.springframework.transaction.annotation.Transactional;
-/**
- * Classe responsável pelas regras de negócio da entidade Curso.
- * 
- * Atua como intermediária entre o Controller e o DAO,
- * garantindo que os dados estejam válidos antes de serem persistidos.
- */
-@Service
-@Transactional
+
+@Service // Marca como camada de serviço
+@Transactional // Todas operações são transacionais
 public class CursoService implements CursoIService {
 
-    private final CursoDao cursoDao;
+    // Injeta o repository (acesso ao banco)
+    private final CursoRepository repository;
 
-    public CursoService(CursoDao cursoDao) {
-        this.cursoDao = cursoDao;
+    // Construtor com injeção de dependência
+    public CursoService(CursoRepository repository) {
+        this.repository = repository;
     }
-    
+
     @Override
-    @Transactional
     public Curso save(Curso curso) throws RuntimeException {
 
+        // Valida os dados antes de salvar
         validarCurso(curso);
 
-        return cursoDao.save(curso);
+        // Salva no banco (insert)
+        return repository.save(curso);
     }
 
-    /**
-     * Atualiza um curso existente no banco.
-     */
     @Override
-    @Transactional
     public Curso update(Curso curso) throws RuntimeException {
 
-        // Valida antes de atualizar
+        // Valida os dados
         validarCurso(curso);
 
-        // Garante que o curso existe (tem ID)
+        // Garante que tem ID (senão não atualiza)
         if (curso.getId() == null) {
             throw new RuntimeException("Curso não pode ser atualizado sem ID");
         }
 
-        return cursoDao.update(curso);
+        // No JPA, save também faz update
+        return repository.save(curso);
     }
 
-    /**
-     * Retorna todos os cursos cadastrados no banco.
-     */
     @Override
     public List<Curso> findAll() throws RuntimeException {
-        return cursoDao.findAll();
+        // Retorna todos os cursos
+        return repository.findAll();
     }
 
-    /**
-     * Busca um curso pelo ID.
-     */
     @Override
     public Curso findById(Long id) throws RuntimeException {
 
+        // Valida ID
         if (id == null) {
             throw new RuntimeException("ID não pode ser nulo");
         }
 
-        Curso curso = cursoDao.findById(id);
-
-        if (curso == null) {
-            throw new RuntimeException("Curso não encontrado");
-        }
-
-        return curso;
+        // Busca por ID e lança erro se não encontrar
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
     }
 
-    /**
-     * Remove um curso do banco de dados.
-     */
     @Override
-    @Transactional
     public void delete(Curso curso) throws RuntimeException {
 
+        // Valida se o curso é válido
         if (curso == null || curso.getId() == null) {
             throw new RuntimeException("Curso inválido para remoção");
         }
 
-        cursoDao.delete(curso);
+        // Remove do banco
+        repository.delete(curso);
     }
 
     @Override
     public List<Curso> findByNome(String nome) throws RuntimeException {
 
-    if (StringUtil.isNullOrEmpty(nome)) {
-        throw new RuntimeException("Nome para busca não pode ser vazio");
+        // Valida o nome
+        if (StringUtil.isNullOrEmpty(nome)) {
+            throw new RuntimeException("Nome para busca não pode ser vazio");
+        }
+
+        // Busca cursos pelo nome
+        return repository.findByNome(nome);
     }
 
-    return cursoDao.findByNome(nome);
-    }
-    
-    /**
-     * Método responsável por validar as regras de negócio do Curso.
-     */
+    // Método interno para validar regras de negócio
     private void validarCurso(Curso curso) {
 
         if (curso == null) {

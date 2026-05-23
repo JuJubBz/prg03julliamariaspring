@@ -6,18 +6,19 @@ package br.com.ifba.curso.view;
 
 import br.com.ifba.curso.controller.CursoController;
 import br.com.ifba.curso.controller.CursoIController;
-import br.com.ifba.curso.dao.CursoDao;
 import br.com.ifba.curso.entity.Curso;
 import br.com.ifba.curso.service.CursoIService;
 import br.com.ifba.curso.service.CursoService;
 import javax.swing.JOptionPane;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author Julia Freitas
  */
 public class CursoSave extends javax.swing.JFrame {
-    CursoIService service = new CursoService(new CursoDao());
+    @Autowired
+    private CursoService service;
     CursoController controller = new CursoController(service);
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CursoSave.class.getName());
 

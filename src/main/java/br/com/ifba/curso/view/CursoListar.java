@@ -5,8 +5,7 @@
 package br.com.ifba.curso.view;
 
 import br.com.ifba.curso.controller.CursoController;
-import br.com.ifba.curso.controller.CursoIController;
-import br.com.ifba.curso.dao.CursoDao;
+
 import br.com.ifba.curso.entity.Curso;
 import br.com.ifba.curso.service.CursoIService;
 import br.com.ifba.curso.service.CursoService;
@@ -15,6 +14,7 @@ import jakarta.persistence.Persistence;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -24,7 +24,8 @@ public class CursoListar extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CursoListar.class.getName());
 
-    CursoIService service = new CursoService(new CursoDao());
+    @Autowired
+    private CursoService service;
     CursoController controller = new CursoController(service);
     
     /**
