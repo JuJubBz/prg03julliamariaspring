@@ -18,6 +18,7 @@ public class Prg03persistenciajulliamariaApplication {
             CursoListar tela = context.getBean(CursoListar.class);
 
             tela.setLocationRelativeTo(null);
+            System.out.println("AQUI");
             tela.setVisible(true);
         });
     }

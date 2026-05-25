@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Julia Freitas
  */
+
 @Component
 public class CursoListar extends javax.swing.JFrame {
     
