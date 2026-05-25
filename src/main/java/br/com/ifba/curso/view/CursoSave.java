@@ -12,10 +12,12 @@ import br.com.ifba.curso.service.CursoService;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 /**
  *
  * @author Julia Freitas
  */
+
 public class CursoSave extends javax.swing.JFrame {
     @Autowired
     private CursoService service;

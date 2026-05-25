@@ -10,6 +10,7 @@ import br.com.ifba.curso.repository.CursoRepository;
 import br.com.ifba.infrastructure.util.StringUtil;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 // Indica que é uma classe de serviço (regra de negócio)
 import org.springframework.stereotype.Service;
@@ -19,15 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service // Marca como camada de serviço
 @Transactional // Todas operações são transacionais
+@RequiredArgsConstructor
 public class CursoService implements CursoIService {
 
     // Injeta o repository (acesso ao banco)
     private final CursoRepository repository;
-
-    // Construtor com injeção de dependência
-    public CursoService(CursoRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Curso save(Curso curso) throws RuntimeException {
@@ -56,6 +53,7 @@ public class CursoService implements CursoIService {
 
     @Override
     public List<Curso> findAll() throws RuntimeException {
+
         // Retorna todos os cursos
         return repository.findAll();
     }
@@ -100,22 +98,27 @@ public class CursoService implements CursoIService {
     // Método interno para validar regras de negócio
     private void validarCurso(Curso curso) {
 
+        // Verifica se o objeto curso existe
         if (curso == null) {
             throw new RuntimeException("Curso não pode ser nulo");
         }
 
+        // Valida nome
         if (StringUtil.isNullOrEmpty(curso.getNome())) {
             throw new RuntimeException("Nome é obrigatório");
         }
 
+        // Valida descrição
         if (StringUtil.isNullOrEmpty(curso.getDescricao())) {
             throw new RuntimeException("Descrição é obrigatória");
         }
 
+        // Valida quantidade
         if (curso.getQuantidade() <= 0) {
             throw new RuntimeException("Quantidade deve ser maior que zero");
         }
 
+        // Valida instituição
         if (StringUtil.isNullOrEmpty(curso.getInstituicao())) {
             throw new RuntimeException("Instituição é obrigatória");
         }

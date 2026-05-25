@@ -1,49 +1,48 @@
 package br.com.ifba.infrastructure.entity;
 
-// Importações do JPA (Jakarta Persistence)
+// Importações do JPA (para mapear a classe no banco)
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
+// Importações do Lombok (para evitar código repetido)
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
 /**
  * Classe base para todas as entidades do sistema.
  * 
- * Objetivo:
- * Evitar repetição de código (principalmente o ID) em várias classes.
+ * Serve para evitar repetir código (principalmente o ID)
+ * em várias classes do projeto.
  * 
- * Essa classe NÃO será uma tabela no banco de dados.
- * Ela apenas fornece atributos comuns para as entidades que herdarem dela.
+ * Essa classe NÃO vira uma tabela no banco,
+ * ela só passa seus atributos para as classes filhas.
  */
-@MappedSuperclass // Indica que essa classe NÃO vira tabela, mas será herdada
-public abstract class PersistenceEntity { // abstract = não pode ser instanciada
+
+// Indica que essa classe não é tabela, mas será herdada por outras entidades
+@MappedSuperclass
+
+// Lombok cria automaticamente os métodos GET (getId)
+@Getter
+
+// Lombok cria equals() e hashCode()
+@EqualsAndHashCode
+
+// Classe abstrata = não pode criar objeto direto dela
+public abstract class PersistenceEntity {
 
     /**
-     * Identificador único da entidade (chave primária).
+     * ID único da entidade (chave primária no banco)
      */
-    @Id // Define como chave primária no banco
+
+    // Define como chave primária
+    @Id
+
+    // Define que o banco vai gerar o ID automaticamente (auto incremento)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // Define que o valor será gerado automaticamente pelo banco (auto incremento)
+    
+    // Atributo que será herdado por todas as entidades
     private Long id;
 
-    /**
-     * Retorna o ID da entidade.
-     * 
-     * @return id único
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Define o ID da entidade.
-     * 
-     * Normalmente não é necessário usar esse método,
-     * pois o próprio banco gera o ID automaticamente.
-     * 
-     * @param id identificador da entidade
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 }
